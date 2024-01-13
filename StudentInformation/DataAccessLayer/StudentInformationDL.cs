@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
+using OpenQA.Selenium;
 using StudentInformation.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -45,9 +48,22 @@ namespace StudentInformation.DataAccessLayer
         }
 
 
+        public async Task AddStudents(List<StudentInfo> students)
+        {
+
+            await _mongoCollection.InsertManyAsync(students);
+        }
+
+
         public async Task<IList<StudentInfo>> GetAllStudent()
         {
             return await _mongoCollection.Find(new BsonDocument()).ToListAsync();
+        }
+
+        public async Task<IEnumerable<StudentInfo>> GetStudentsByPage(int page, int pageSize)
+        {
+            var skip = (page - 1) * pageSize;
+            return await _mongoCollection.Find(_ => true).Skip(skip).Limit(pageSize).ToListAsync();
         }
 
         public async Task<StudentInfo> GetStudent(string id)
@@ -56,6 +72,11 @@ namespace StudentInformation.DataAccessLayer
             return await _mongoCollection.Find(filter).SingleOrDefaultAsync();
         }
 
+        public async Task UpdateStudent(StudentInfo student)
+        {
+            var filter = _filterBuilder.Eq(studentInfo => studentInfo.Id, student.Id);
+            await _mongoCollection.ReplaceOneAsync(filter, student);
+        }
 
         public async Task DeleteStudent(string id)
         {
@@ -67,5 +88,7 @@ namespace StudentInformation.DataAccessLayer
         {
             await _mongoCollection.DeleteManyAsync(new BsonDocument());
         }
+
+
     }
 }

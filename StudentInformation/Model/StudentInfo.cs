@@ -8,14 +8,11 @@ namespace StudentInformation.Model
 {
     public class StudentInfo
     {
-        public StudentInfo() 
-        {
-            Id = Guid.NewGuid().ToString();
-        }
+
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        [Required]
+
         public string? Id { get; set; }
         [Required]
         [BsonElement("Name")]
@@ -23,7 +20,6 @@ namespace StudentInformation.Model
         [Required]
         public string LastName { get; set; }
 
-        [Required]
         public string Contact {  get; set; }
 
         public string Address { get; set; }
@@ -36,9 +32,5 @@ namespace StudentInformation.Model
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
 
-        public static implicit operator StudentInfoResponse(List<StudentInfo> v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

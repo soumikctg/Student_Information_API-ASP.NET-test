@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace StudentInformation
 {
     public class Startup
@@ -29,7 +30,7 @@ namespace StudentInformation
         {
             
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddScoped<IStudentInformationDL, StudentInformationDL>();
 
             services.AddSwaggerGen(c =>

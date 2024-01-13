@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+
+using Microsoft.JSInterop.Implementation;
+using Newtonsoft.Json.Linq;
 using StudentInformation.DataAccessLayer;
 using StudentInformation.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace StudentInformation.Controllers
@@ -38,6 +43,21 @@ namespace StudentInformation.Controllers
             
             return Ok(response);
         }
+
+        [HttpPost("AddStudents")]
+        public async Task<IActionResult> AddStudents([FromBody] List<StudentInfo> students)
+        {
+            if(students == null || !students.Any())
+            {
+                return BadRequest("No students provided");
+            }
+
+            await _studentInformationDL.AddStudents(students);
+
+
+            return Ok(students);
+        }
+
         [HttpGet("GetAllStudent")]
         public async Task<IActionResult> GetAllStudent()
         {
@@ -45,11 +65,56 @@ namespace StudentInformation.Controllers
            return Ok(studentInfos);
         }
 
+        [HttpGet("GetStudentsByPage")]
+        public async Task<IActionResult> GetStudentsByPAge( [FromQuery]int page, [FromQuery] int pageSize)
+        {
+            var pagedStudents = await _studentInformationDL.GetStudentsByPage(page,pageSize);
+            return Ok(pagedStudents);
+        }
+
         [HttpGet("GetStudent")]
         public async Task<IActionResult> GetStudent([FromQuery] string id)
         {
             var student = await _studentInformationDL.GetStudent(id);
             return Ok(student);
+        }
+
+        [HttpPut("UpdateStudent")]
+        public async Task<IActionResult> UpdateStudent(string id, StudentInfo StudentDto)
+        {
+            var student = await _studentInformationDL.GetStudent(id);
+            
+            if(student is null)
+            {
+                return Ok(NotFound());
+            }
+            student.FirstName = StudentDto.FirstName;
+            student.LastName = StudentDto.LastName;
+            student.Contact=StudentDto.Contact;
+            student.Address = StudentDto.Address;
+            student.Department = StudentDto.Department;
+
+            await _studentInformationDL.UpdateStudent(student);
+
+            return Ok(NoContent());
+        }
+
+        [HttpPatch("PartialUpdate")]
+        public async Task<IActionResult> PartialUpdate(string id,[FromBody] ContactAddressDto updateDto)
+        {
+            var student = await _studentInformationDL.GetStudent(id);
+
+            if(student is null)
+            {
+                return NotFound();
+            }
+
+            student.Contact = updateDto.Contact;
+            student.Address = updateDto.Address;
+
+            await _studentInformationDL.UpdateStudent(student);
+
+            return Ok(NoContent());
         }
 
 

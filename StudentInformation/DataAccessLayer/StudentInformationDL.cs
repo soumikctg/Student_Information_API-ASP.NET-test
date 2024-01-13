@@ -44,6 +44,7 @@ namespace StudentInformation.DataAccessLayer
             return response;
         }
 
+
         public async Task<IList<StudentInfo>> GetAllStudent()
         {
             return await _mongoCollection.Find(new BsonDocument()).ToListAsync();
@@ -53,6 +54,18 @@ namespace StudentInformation.DataAccessLayer
         {
             var filter = _filterBuilder.Eq(StudentInfo => StudentInfo.Id, id);
             return await _mongoCollection.Find(filter).SingleOrDefaultAsync();
+        }
+
+
+        public async Task DeleteStudent(string id)
+        {
+            var filter = _filterBuilder.Eq(StudentInfo => StudentInfo.Id, id);
+            await _mongoCollection.DeleteOneAsync(filter);
+        }
+
+        public async Task DeleteAllStudents()
+        {
+            await _mongoCollection.DeleteManyAsync(new BsonDocument());
         }
     }
 }

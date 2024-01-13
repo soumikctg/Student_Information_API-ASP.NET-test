@@ -44,3 +44,4 @@ D:\Dot Net\StudentInformation\StudentInformation\bin\Debug\net5.0\ZstdSharp.dll
 D:\Dot Net\StudentInformation\StudentInformation\bin\Debug\net5.0\runtimes\linux\native\libmongocrypt.so
 D:\Dot Net\StudentInformation\StudentInformation\bin\Debug\net5.0\runtimes\osx\native\libmongocrypt.dylib
 D:\Dot Net\StudentInformation\StudentInformation\bin\Debug\net5.0\runtimes\win\native\mongocrypt.dll
+D:\Dot Net\StudentInformation\StudentInformation\obj\Debug\net5.0\StudentInformation.sourcelink.json

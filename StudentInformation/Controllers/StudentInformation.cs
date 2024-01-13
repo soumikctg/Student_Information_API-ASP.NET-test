@@ -52,5 +52,27 @@ namespace StudentInformation.Controllers
             return Ok(student);
         }
 
+
+        [HttpDelete("DeleteStudent")]
+        public async Task<IActionResult> DeleteStudent(string id)
+        {
+            var oldStudent = await _studentInformationDL.GetStudent(id);
+            if(oldStudent is null)
+            {
+                return Ok(NotFound());
+            }
+            await _studentInformationDL.DeleteStudent(id);
+            return Ok(NoContent());
+        }
+
+
+        [HttpDelete("DeleteAllStudents")]
+        public async Task<IActionResult> DeleteAllStudents()
+        {
+
+            await _studentInformationDL.DeleteAllStudents();
+            return Ok(NoContent());
+        }
+
     }
 }

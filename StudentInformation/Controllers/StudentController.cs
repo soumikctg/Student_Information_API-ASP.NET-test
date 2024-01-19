@@ -1,26 +1,22 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.JSInterop.Implementation;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using StudentInformation.DataAccessLayer;
 using StudentInformation.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace StudentInformation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentInformation : ControllerBase
+    public class StudentController : ControllerBase
     {
         //first step
-        private readonly IStudentInformationDL _studentInformationDL;
+        private readonly IStudentProfile _studentInformationDL;
 
-        public StudentInformation (IStudentInformationDL studentInformationDL)
+        public StudentController (IStudentProfile studentInformationDL)
         {
             _studentInformationDL = studentInformationDL;
         }
@@ -41,12 +37,13 @@ namespace StudentInformation.Controllers
             }
             
             
-            return Ok(response);
+            return Ok(HttpStatusCode.Created);
         }
 
         [HttpPost("AddStudents")]
         public async Task<IActionResult> AddStudents([FromBody] List<StudentInfo> students)
         {
+
             if(students == null || !students.Any())
             {
                 return BadRequest("No students provided");

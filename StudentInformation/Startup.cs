@@ -1,17 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using StudentInformation.DataAccessLayer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 
 namespace StudentInformation
@@ -28,14 +22,14 @@ namespace StudentInformation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-
+            var mongoDbSettings = Configuration["MongoDbSettings:ConnectionString"];
+            services.AddSingleton<IMongoClient>(s=>new MongoClient(mongoDbSettings));
             services.AddControllers().AddNewtonsoftJson();
-            services.AddScoped<IStudentInformationDL, StudentInformationDL>();
+            services.AddScoped<IStudentProfile, StudentProfile>();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentInformation", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentProfile", Version = "v1" });
             });
         }
 
@@ -46,7 +40,7 @@ namespace StudentInformation
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StudentInformation v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StudentProfile v1"));
             }
 
             app.UseHttpsRedirection();

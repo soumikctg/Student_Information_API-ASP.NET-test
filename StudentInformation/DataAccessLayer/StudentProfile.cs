@@ -1,31 +1,22 @@
-﻿using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
 using StudentInformation.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace StudentInformation.DataAccessLayer
 {
-    public class StudentInformationDL : IStudentInformationDL
+    public class StudentProfile : IStudentProfile
     {
-        //first step
-        private readonly IConfiguration _configuration;
-        private readonly MongoClient _mongoClient;
         private readonly IMongoCollection<StudentInfo> _mongoCollection;
         private readonly FilterDefinitionBuilder<StudentInfo> _filterBuilder = Builders<StudentInfo>.Filter;
-
-        public StudentInformationDL(IConfiguration configuration)
+        private const string CollectionName = "StudentDetails";
+        private const string DatabaseName = "StudentInfoDB";
+        public StudentProfile(IMongoClient _mongoClient)
         {
-            _configuration = configuration;
-            _mongoClient = new MongoClient(_configuration["DatabaseSettings:ConnectionString"]);
-            var _MongoDatabase = _mongoClient.GetDatabase(_configuration["DatabaseSettings:DatabaseName"]);
-            _mongoCollection = _MongoDatabase.GetCollection<StudentInfo>(_configuration["DatabaseSettings:CollectionName"]);
+            var _MongoDatabase = _mongoClient.GetDatabase(DatabaseName);
+            _mongoCollection = _MongoDatabase.GetCollection<StudentInfo>(CollectionName);
 
         }
         //first step
@@ -88,7 +79,6 @@ namespace StudentInformation.DataAccessLayer
         {
             await _mongoCollection.DeleteManyAsync(new BsonDocument());
         }
-
 
     }
 }

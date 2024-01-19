@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
-using StudentInformation.Model;
+﻿using StudentInformation.Model;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace StudentInformation.DataAccessLayer
 {
-    public interface IStudentInformationDL
+    public interface IStudentProfile
     {
         public Task<StudentInfoResponse> AddStudent(StudentInfo studentInfo);
         public Task AddStudents(List<StudentInfo> students);
